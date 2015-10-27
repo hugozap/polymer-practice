@@ -1,0 +1,42 @@
+<!-- Animation Sample  -->
+<dom-module id="anim-test1">
+	<template>
+		<style>
+			:host {
+				display: block;
+			}
+		</style>
+
+		<content></content>
+		
+	</template>
+	<script>
+		Polymer({
+			// Animation 
+			is: 'anim-test1',
+			behaviors:[Polymer.NeonAnimatableBehavior],
+			properties:{
+				animationConfig:{
+					value:function(){
+						return {
+							'entry':{
+								name:'slide-from-left-animation',
+								node:this
+							},
+							'exit':{
+								name:'slide-right-animation',
+								node:this
+							}
+						}
+					}
+				}
+			},
+			listeners:{
+				'neon-animation-finish':'_neonAnimationFinish'
+			},
+			_neonAnimationFinish:function(){
+				console.log('neon animation finished');
+			}
+		});
+	</script>
+</dom-module>
