@@ -1,0 +1,107 @@
+<!-- Animation Sample  -->
+<dom-module id="anim-cascade">
+	<template>
+		<style>
+			:host {
+				display: block;
+				
+			}
+			.tile{
+				width:150px;
+				height:150px;
+				border:solid 1px #24E276;
+				margin:5px;
+				background-size:     cover; 
+				background-repeat:   no-repeat;
+				background-position: center center; 
+				display:inline-block;
+				
+
+			}
+
+			.tile:nth-child(1){
+				background-image:url('../images/bean/1.jpeg');
+			}
+			.tile:nth-child(2){
+				background-image:url('../images/bean/2.jpeg');
+			}
+			.tile:nth-child(3){
+				background-image:url('../images/bean/3.jpeg');
+			}
+
+			.tile:nth-child(4){
+				background-image:url('../images/bean/4.jpeg');
+			}
+
+			#salute{
+				width:100%;
+				height:60px;
+				text-align: center;
+				background-color: #DD86E2;
+			}
+		</style>
+
+		<content></content>
+		<p id='salute' class="salute">HEY</p>
+
+		<div class="tiles">
+			<div class="tile">1</div>
+			<div class="tile">2</div>
+			<div class="tile">3</div>
+			<div class="tile">4</div>
+		</div>
+		
+	</template>
+	<script>
+		Polymer({
+			// Animation 
+			is: 'anim-cascade',
+			behaviors:[Polymer.NeonAnimatableBehavior],
+			properties:{
+				animationConfig:{
+					value:function(){
+						return {
+							'entry':[{
+								name:'cascaded-animation',
+								animation:'transform-animation',
+								transformFrom:'translateX(1000%) rotate(350deg)',
+								transformTo:'none',
+								timing:{
+									delay:50,
+									duration:1200
+								}
+							},{
+								name:'scale-up-animation',
+								node:this.$.salute
+							}],
+							'exit':[{
+								name:'slide-left-animation',
+								node:this
+							},{
+								name:'transform-animation',
+								transformFrom:'none',
+								transformTo:'rotate(350deg)',
+								node:this.$.salute,
+								timing:{
+									delay:0
+								}
+							}
+							]
+						}
+					}
+				}
+			},
+			listeners:{
+				'neon-animation-finish':'_neonAnimationFinish'
+			},
+			_neonAnimationFinish:function(){
+				console.log('neon animation finished');
+			},
+			attached:function(){
+				var nodeList = Polymer.dom(this.root).querySelectorAll('.tile');
+				console.log(nodeList);
+				this.animationConfig['entry'][0].nodes = Array.prototype.slice.call(nodeList);
+			}
+		});
+	</script>
+</dom-module>

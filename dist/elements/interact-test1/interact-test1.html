@@ -1,0 +1,157 @@
+<!--
+@license
+Copyright (c) 2015 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/paper-styles/paper-styles.html">
+
+<link rel="import" href="../interact-wrapper.html">
+
+
+<dom-module id="interact-test1">
+  <template>
+    <style>
+
+      :host {
+        display: block;
+        padding:10px;
+        background-image: url('board.svg');
+        background-size: contain;
+
+      }
+
+      .dropzone{
+
+        width:100px;
+        height: 100px;
+        border:solid 2px #8FC7E2;
+        background-color: rgba(0, 0, 0, 0.3);
+        display:inline-block;
+        margin:10px;
+      }
+
+      .dropzone.active{
+        border:solid 2px #205211;
+
+      }
+
+      .card{
+        width:90px;
+        height: 90px;
+        border:solid 1px #14002D;
+        background-image:url('card.svg');
+        @apply(--shadow-elevation-2dp);
+        font-size:20px;
+        justify-content: center;
+        align-items: center;
+        
+      }
+
+    </style>
+
+    
+    <template id='templatezones' is='dom-repeat' items='{{dropzones}}'>
+      <div class="dropzone"></div>
+    </template>
+
+    <div class="card flex">
+      <span>Drag Me</span>
+    </div>
+
+
+  </template>
+  <script>
+  (function() {
+    'use strict';
+
+    Polymer({
+      is: 'interact-test1',
+
+      properties: {
+
+        dropzones:{
+          type:Array,
+          value:function(){
+            var zones = [];
+            for(var i=0;i<10;i++){
+              zones.push({});
+            }
+            return zones;
+          }
+        }
+      },
+      attached:function(){
+
+        this.setupCardDragging();
+        this.$.templatezones.addEventListener('dom-change',function(){
+              this.setupDropZone();
+            }.bind(this));
+
+
+      },
+      setupCardDragging:function(){
+
+        //From the interact docs
+        function dragMoveListener (event) {
+            var target = event.target,
+                // keep the dragged position in the data-x/data-y attributes
+                x = (parseFloat(target.getAttribute('data-x')) || 0) + event.dx,
+                y = (parseFloat(target.getAttribute('data-y')) || 0) + event.dy;
+
+            // translate the element
+            target.style.webkitTransform =
+            target.style.transform =
+              'translate(' + x + 'px, ' + y + 'px)';
+
+            // update the posiion attributes
+            target.setAttribute('data-x', x);
+            target.setAttribute('data-y', y);
+         }
+
+
+        
+        interact(".card",{
+          //context:this.$$(".someContainer")
+        })
+        .draggable({
+          inertia: true,
+          onmove: dragMoveListener
+        })
+      },
+      setupDropZone:function(){
+        //Get all dropzones
+        var hotspotElems = Polymer.dom(this.root).querySelectorAll('.dropzone');
+        var self = this;
+
+        interact('.dropzone').dropzone({
+
+          accept:'.card',
+          overlap:'pointer',
+          ondragenter:function(ev){
+            self.toggleClass('active', true, ev.target);
+            console.log('drag enter');
+
+          },
+          ondragleave:function(ev){
+            self.toggleClass('active', false, ev.target);
+
+          },
+          ondrop:function(ev){
+
+            var card = ev.relatedTarget;
+            var dropzone = ev.target;
+            alert('good job!');
+
+          }
+        });
+      }
+    })
+})();
+  </script>
+</dom-module>
