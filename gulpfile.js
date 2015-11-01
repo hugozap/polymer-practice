@@ -136,6 +136,7 @@ gulp.task('copy', function () {
 
   var elements = gulp.src(['app/elements/**/*.html',
                            'app/elements/**/*.css',
+                           'app/elements/**/*.svg',
                            'app/elements/**/*.js'])
     .pipe(gulp.dest('dist/elements'));
 
