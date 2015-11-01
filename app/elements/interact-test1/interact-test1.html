@@ -86,7 +86,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           }
         }
       },
-      attached:function(){
+      ready:function(){
 
         this.setupCardDragging();
         this.$.templatezones.addEventListener('dom-change',function(){
@@ -126,30 +126,32 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       },
       setupDropZone:function(){
         //Get all dropzones
-        var hotspotElems = Polymer.dom(this.root).querySelectorAll('.dropzone');
+        var dropZones = Polymer.dom(this.root).querySelectorAll('.dropzone');
         var self = this;
+        dropZones.forEach(function(dropzone){
+          interact(dropzone).dropzone({
 
-        interact('.dropzone').dropzone({
+            accept:'.card',
+            overlap:'pointer',
+            ondragenter:function(ev){
+              self.toggleClass('active', true, ev.target);
+              console.log('drag enter');
 
-          accept:'.card',
-          overlap:'pointer',
-          ondragenter:function(ev){
-            self.toggleClass('active', true, ev.target);
-            console.log('drag enter');
+            },
+            ondragleave:function(ev){
+              self.toggleClass('active', false, ev.target);
 
-          },
-          ondragleave:function(ev){
-            self.toggleClass('active', false, ev.target);
+            },
+            ondrop:function(ev){
 
-          },
-          ondrop:function(ev){
+              var card = ev.relatedTarget;
+              var dropzone = ev.target;
+              alert('good job!');
 
-            var card = ev.relatedTarget;
-            var dropzone = ev.target;
-            alert('good job!');
-
-          }
-        });
+            }
+          });
+        })
+        
       }
     })
 })();
